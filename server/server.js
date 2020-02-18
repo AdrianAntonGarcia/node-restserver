@@ -16,7 +16,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-app.use(require('./routes/usuario'));
+//Configuración global de rutas
+
+app.use(require('./routes/index'));
+
+
+//mongoose
 //mongodb+srv://adrian:8dT8ukS7O1zwRJbq@cluster0-8vk8z.mongodb.net/cafe
 mongoose.connect(process.env.URLDB, {
     useNewUrlParser: true,

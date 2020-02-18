@@ -29,3 +29,25 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 process.env.URLDB = urlDB;
+
+/**
+ * ==========================
+ * Vencimiento del token
+ * ==========================
+ * 60 segundos
+ * 60 minutos
+ * 24 horas
+ * 30 días
+ */
+
+process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
+
+/**
+ * ==========================
+ * SEED de autenticación
+ * ==========================
+ * 
+ * Para el seed vamos a declarar una variable en heroku para que este seed no se vea en github
+ */
+
+process.env.SEED = process.env.SEED || 'este-es-el-seed-desarrollo';

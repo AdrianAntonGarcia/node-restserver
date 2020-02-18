@@ -4,12 +4,20 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const Usuario = require('../models/usuario');
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 
 const app = express();
 
 
-
-app.get('/usuario', function(req, res) {
+/**
+ * Se puede mandar un middleware pasandolo como segundo parámetro
+ */
+app.get('/usuario', verificaToken, (req, res) => {
+    // return res.json({
+    //     usuario: req.usuario,
+    //     nombre: req.usuario.nombre,
+    //     email: req.usuario.email
+    // });
     // Los parámetros opcionales vienen en el query
     // Si no viene informado lo ponemos a 0 por defecto
     let desde = req.query.desde || 0;
@@ -29,7 +37,7 @@ app.get('/usuario', function(req, res) {
             });
         }
 
-        Usuario.count({ estado: true }, (err, conteo) => {
+        Usuario.countDocuments({ estado: true }, (err, conteo) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -49,7 +57,7 @@ app.get('/usuario', function(req, res) {
 
 
 //Post para crear, put para modificar
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], function(req, res) {
 
     let body = req.body;
 
@@ -75,7 +83,7 @@ app.post('/usuario', function(req, res) {
     });
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
     let id = req.params.id;
 
     // let body = req.body;
@@ -108,7 +116,7 @@ app.put('/usuario/:id', function(req, res) {
 /**
  * Borrado lógico de la base de datos
  */
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', verificaToken, function(req, res) {
 
     let id = req.params.id;
     Usuario.findOneAndUpdate({ _id: id }, { estado: false }, { new: true, runValidators: true }, (err, usuarioBorradoLogico) => {
